@@ -38,7 +38,11 @@ console.log("Hello from my external file!");
 const quotes = [
 	"win win win no matter what!",
 	"b**** don't kill my vibe",
-	"just like that"
+	"just like that",
+	"cassandra chronicles",
+	"classy cassie",
+	"saucy cassie she likes to dip",
+	
 ];
 
 const quoteDisplay = document.getElementById('quoteDisplay');

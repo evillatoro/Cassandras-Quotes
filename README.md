@@ -1,1 +1,1 @@
-Link: https://evillatoro.github.io/Type-Memer/
+Link: https://evillatoro.github.io/Cassandras-Quotes

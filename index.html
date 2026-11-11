@@ -1,36 +1,128 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Typing game</title>
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="scripts.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cassandra's Quotes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-	<link href='https://fonts.googleapis.com/css?family=Raleway:400,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="animate.css">
-	<link rel="stylesheet" href="style.css">
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .quote-container {
+            font-size: 20px;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            text-align: left;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            min-height: 80px;
+        }
+
+        /* Character Highlighting States */
+        .correct {
+            color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            background-color: #f8d7da;
+            text-decoration: underline;
+        }
+
+        .current {
+            border-left: 2px solid #007bff;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { border-left-color: transparent; }
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #007bff;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+	<script src="scripts.js" defer></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
 <body>
-	<div class="wrapper">
-		<h1>Type Memer</h1>
-		<p>Type as much dankness as you can until time runs out!</p>
-		<button id="start">START</button>
-		<div class="outerWrap">
-			<div class="scoreWrap">
-				<p>Score</p>
-				<span class="score">0</span>
-			</div>
-			<div class="timeWrap">
-				<p>Time left</p>
-				<span class="time">60</span>
-			</div>
-		</div>
-    <div id="image_spot">
-    </div>     
-		<div class="wordsWrap">
-			<p class="words"></p>
+
+<div class="container">
+    <h1>Cassandra's Quotes</h1>
+    <div class="quote-container" id="quoteDisplay">Loading quote...</div>
+    <input type="text" class="input-field" id="quoteInput" placeholder="Start typing here when the race begins..." autofocus>
+    
+    <div class="stats">
+        <div>WPM: <span id="wpm">0</span></div>
+        <div>Accuracy: <span id="accuracy">100</span>%</div>
+        <div>Time: <span id="timer">0</span>s</div>
     </div>
-	</div>
+    
+    <button class="btn" id="resetBtn">Restart Race</button>
+</div>
 
 </body>
 </html>

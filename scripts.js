@@ -3,136 +3,152 @@ var dict = {};
 var temp, button, words, timerDiv, scoreDiv, points, spans, typed, seconds;
 var keys;
 
-$.ajax({ 
-    'url' : "https://api.imgflip.com/get_memes",
-    'method' : 'GET',
-    'success' : 
-      function(d) {
-        data = d;
-        parse();
-      }
-    });
+$.ajax({
+	'url': "https://api.imgflip.com/get_memes", // memes api
+	'method': 'GET',
+	'success':
+		function (d) {
+			data = d;
+			console.log("made api call");
+			parse();
+		}
+});
 
-function parse() {
-  var arr = data.data.memes;
-  for (var m of arr) {
-    var value = m.url;
-    //console.log(m);
-    value.replace("\\", "");
-    //console.log(JSON.stringify(value));
-    // name value\
-    var name = m.name.toUpperCase();
-    dict[name] = m.url;
-  }
-  keys = Object.keys(dict);
-  //urls = dict
+function parse() { // parse through data from api
+	var arr = data.data.memes;
+	for (var m of arr) {
+		var value = m.url;
+		//console.log(m);
+		value.replace("\\", "");
+		//console.log(JSON.stringify(value));
+		// name value\
+		var name = m.name.toUpperCase();
+		dict[name] = m.url;
+	}
+	keys = Object.keys(dict);
+
+	//console.log(keys);
+
+	// boot up first race
+	startNewRace();
 }
 
-//array of keys
-//var urls = dict[keys[rand]];
+console.log("Hello from my external file!");
 
+const quotes = [
+	"win win win no matter what!",
+	"b@#$% don't kill my vibe",
+	"just like that"
+];
 
-window.onload = function() {
-  temp = document.querySelector('.time');
-  button = document.getElementById("start");
-  words = document.querySelector(".words");
-  timerDiv = document.querySelector(".time");
-  scoreDiv = document.querySelector(".score");
-  points = 0;
-  spans;
-  typed;
-  seconds = 60;
-      button.addEventListener("click", function(e){
-      countdown();
-      random();
-      button.disabled = true; 
-    });
+const quoteDisplay = document.getElementById('quoteDisplay');
+const quoteInput = document.getElementById('quoteInput');
+const wpmDisplay = document.getElementById('wpm');
+const accuracyDisplay = document.getElementById('accuracy');
+const timerDisplay = document.getElementById('timer');
+const resetBtn = document.getElementById('resetBtn');
 
+let startTime;
+let timerInterval;
+let isTracking = false;
+let totalEntries = 0;
+let errors = 0;
+
+// Initialize Game
+function startNewRace() {
+	clearInterval(timerInterval);
+	isTracking = false;
+	startTime = null;
+	totalEntries = 0;
+	errors = 0;
+
+	wpmDisplay.innerText = '0';
+	accuracyDisplay.innerText = '100';
+	timerDisplay.innerText = '0';
+	quoteInput.value = '';
+	quoteInput.disabled = false;
+
+	// Select and render random quote split into character spans
+	// const randomQuote = keys[Math.floor(Math.random() * keys.length)];
+	const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+	quoteDisplay.innerHTML = '';
+	randomQuote.split('').forEach(char => {
+		const span = document.createElement('span');
+		span.innerText = char;
+		quoteDisplay.appendChild(span);
+	});
+
+	// Mark the very first character as current
+	if (quoteDisplay.firstChild) quoteDisplay.firstChild.classList.add('current');
+	quoteInput.focus();
 }
 
- 	function countdown() {
- 		points = 0;
- 		var timer = setInterval(function(){
- 			button.disabled = true;
-    		seconds--;
-    		temp.innerHTML = seconds;
-    		if (seconds === 0) {
-          $("#image_spot").find("img").remove();
-    			alert("Game over! Your score is " + points);
-    			scoreDiv.innerHTML = "0";
-    			words.innerHTML = "";
-    			button.disabled = false;
-    			clearInterval(timer);
-    			seconds = 60;
-    			timerDiv.innerHTML = "60";
-    			button.disabled = false;	
-    		}
- 		}, 1000);
-  	}
+// Input Event Listener
+quoteInput.addEventListener('input', () => {
+	const quoteSpans = quoteDisplay.querySelectorAll('span');
+	const inputValue = quoteInput.value.split('');
 
-  	function random() {
-  		words.innerHTML = "";
-  		var random = Math.floor(Math.random() * keys.length);
-  		var wordArray = keys[random];
-  		for (var i = 0; i < wordArray.length; i++) { //building the words with spans around the letters
-  			var span = document.createElement("span");
-  			span.classList.add("span");
-  			span.innerHTML = wordArray[i];
-  			words.appendChild(span);
-  		}
-  		spans = document.querySelectorAll(".span");
-      console.log(spans.length);
-      show_image(dict[keys[random]], 150, 150, 'Hi')
-  	}
+	// Start timer on first keystroke
+	if (!isTracking && quoteInput.value.length > 0) {
+		isTracking = true;
+		startTime = new Date();
+		timerInterval = setInterval(updateTimer, 1000);
+	}
 
-  	function typing(e) {
-      //console.log("ayo");
-      var a = e.keyCode;
-  		typed = String.fromCharCode(a);
-        //console.log("typed " + spans.length);
-        console.log("typed " + typed);
-  			for (var i = 0; i < spans.length; i++) {
-          //console.log("in the HTML " + spans[i].innerHTML);
-  				if (spans[i].innerHTML === typed) { // if typed letter is the one from the word
-  					if (spans[i].classList.contains("bg")) { // if it already has class with the bacground color then check the next one
-  						continue;
-  					} else if (spans[i].classList.contains("bg") === false && spans[i-1] === undefined || spans[i-1].classList.contains("bg") !== false ) { // if it dont have class, if it is not first letter or if the letter before it dont have class (this is done to avoid marking the letters who are not in order for being checked, for example if you have two "A"s so to avoid marking both of them if the first one is at the index 0 and second at index 5 for example)
-  						spans[i].classList.add("bg");
-  						break;
-  					}
-  				}
-  			}
-  			var checker = 0;
-  			for (var j = 0; j < spans.length; j++) { //checking if all the letters are typed
-  				if (spans[j].className === "span bg") {
-  					checker++;
-  				}
-  				if (checker === spans.length) { // if so, animate the words with animate.css class
-  					words.classList.add("animated");
-  					words.classList.add("fadeOut");
-  					points++; // increment the points
-  					scoreDiv.innerHTML = points; //add points to the points div
-  					document.removeEventListener("keydown", typing, false);
-  					setTimeout(function(){
-  						words.className = "words"; // restart the classes
-              $("#image_spot").find("img").remove();
-  						random(); // give another word
-  						document.addEventListener("keydown", typing, false);
-  					}, 400);
-  				}
+	totalEntries++;
+	let match = true;
+	errors = 0;
 
-  			}
-  	}
+	quoteSpans.forEach((span, index) => {
+		const character = inputValue[index];
 
-document.addEventListener("keypress", typing, false);
+		// Clean up old indicator classes
+		span.classList.remove('correct', 'incorrect', 'current');
 
-function show_image(src, width, height, alt) {
-    var img = document.createElement("img");
-    img.src = src;
-    img.width = width;
-    img.height = height;
-    img.alt = alt;
+		if (character == null) {
+			// Character hasn't been typed yet
+			if (match) {
+				span.classList.add('current'); // Place active cursor at the front edge of un-typed text
+				match = false;
+			}
+		} else if (character === span.innerText && match) {
+			// Correct character and everything behind it was correct
+			span.classList.add('correct');
+		} else {
+			// Incorrect character or typing ahead of an uncorrected mistake
+			span.classList.add('incorrect');
+			errors++;
+			match = false;
+		}
+	});
 
-    // This next line will just add it to the <body> tag
-    document.getElementById("image_spot").appendChild(img);
+	// Calculate and refresh accuracy mid-flight
+	if (totalEntries > 0) {
+		const currentAccuracy = Math.max(0, Math.round(((totalEntries - errors) / totalEntries) * 100));
+		accuracyDisplay.innerText = currentAccuracy;
+	}
+
+	// Check Win Condition
+	if (inputValue.length === quoteSpans.length && errors === 0) {
+		clearInterval(timerInterval);
+		quoteInput.disabled = true;
+		calculateWPM(true); // Final precise WPM calc
+	}
+});
+
+function updateTimer() {
+	const timePassed = Math.floor((new Date() - startTime) / 1000);
+	timerDisplay.innerText = timePassed;
+	calculateWPM(false);
 }
+
+function calculateWPM(isFinished) {
+	const timePassedElapsed = (new Date() - startTime) / 1000 / 60; // Convert to minutes
+	if (timePassedElapsed <= 0) return;
+
+	const typedWords = quoteInput.value.length / 5; // Standard measurement: 5 characters = 1 word
+	const wpm = Math.round(typedWords / timePassedElapsed);
+	wpmDisplay.innerText = wpm > 0 ? wpm : 0;
+}
+
+resetBtn.addEventListener('click', startNewRace);

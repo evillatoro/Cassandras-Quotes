@@ -37,7 +37,7 @@ console.log("Hello from my external file!");
 
 const quotes = [
 	"win win win no matter what!",
-	"b@#$% don't kill my vibe",
+	"b**** don't kill my vibe",
 	"just like that"
 ];
 

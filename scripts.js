@@ -42,7 +42,8 @@ const quotes = [
 	"cassandra chronicles",
 	"classy cassie",
 	"saucy cassie she likes to dip",
-	
+	"that won September",
+	"cassie cast"
 ];
 
 const quoteDisplay = document.getElementById('quoteDisplay');

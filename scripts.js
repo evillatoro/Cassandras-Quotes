@@ -43,7 +43,8 @@ const quotes = [
 	"classy cassie",
 	"saucy cassie she likes to dip",
 	"that won September",
-	"cassie cast"
+	"cassie cast",
+	"another won november"
 ];
 
 const quoteDisplay = document.getElementById('quoteDisplay');

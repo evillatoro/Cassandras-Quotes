@@ -42,9 +42,11 @@ const quotes = [
 	"cassandra chronicles",
 	"classy cassie",
 	"saucy cassie she likes to dip",
-	"that won September",
+	"that won september",
 	"cassie cast",
-	"another won november"
+	"another won november",
+	"life is an experience",
+	"let's go panthers"
 ];
 
 const quoteDisplay = document.getElementById('quoteDisplay');
